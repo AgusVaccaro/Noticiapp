@@ -1,58 +1,60 @@
 import tkinter as tk
+from tkinter import ttk
+from ttkbootstrap import Style #Incorporamos bootstrap para dar estilo a la app
 
-
-class NoticiApp: #Creamos la clase NoticiApp
+class NoticiApp:
     def __init__(self, ventana):
         self.ventana = ventana
         self.ventana.title("NoticiApp - Aplicación de Noticias en Tiempo Real")
         self.ventana.geometry("800x600")
+        self.ventana.configure(highlightbackground="#007BFF", highlightthickness=3) #Estilo para los bordes de la ventana
 
-        #Color de fondo principal
-        fondo_principal = "#C6E8E3"
+        estilo = Style(theme="cosmo") #Aplicamos el estilo "cosmo"
 
-        self.ventana.configure(bg=fondo_principal)
+        estilo.configure("TFrame", background="#f0f0f0") #Le damos estilo al marco
 
-        #Fuente de texto personalizada
-        fuente_personalizada = ("Ginebra", 14)
+      
+        estilo.configure("TLabel", font=("Helvetica", 24, "bold")) #Estilo para etiquetas
 
-        self.titulo_label = tk.Label(ventana, text="Noticias en Tiempo Real - Argentina", font=("Lucida Bright", 18), bg=fondo_principal)
-        self.titulo_label.pack(pady=10)
+        self.titulo_label = ttk.Label(ventana, text="Noticias en Tiempo Real - Argentina", style="TLabel")
+        self.titulo_label.pack(pady=20)
 
-        #Lista desplegable para seleccionar la categoría
-        self.categoria_label = tk.Label(ventana, text="Selecciona una categoría:", font=fuente_personalizada, bg=fondo_principal)
-        self.categoria_label.pack(pady=5)
+        estilo.configure("TLabel", font=("Helvetica", 18))
+        self.categoria_label = ttk.Label(ventana, text="Selecciona una categoría:", style="TLabel")
+        self.categoria_label.pack(pady=15)
 
-        categorias = ["General", "Negocios", "Entretenimiento", "Salud", "Ciencia", "Deportes", "Tecnología"] #Definimos las categorias
+        categorias = ["General", "Negocios", "Entretenimiento", "Salud", "Ciencia", "Deportes", "Tecnología"]
         self.categoria_seleccionada = tk.StringVar()
         self.categoria_seleccionada.set(categorias[0])
 
-        self.menu_categoria = tk.OptionMenu(ventana, self.categoria_seleccionada, *categorias)
-        self.menu_categoria.config(font=fuente_personalizada)
-        self.menu_categoria.pack()
+        
+        estilo.configure("TCombobox", background="#007BFF", font=("Arial", 16), selectbackground="#007BFF", fieldbackground="white") #Estilo para el menu desplegable
+        self.menu_categoria = ttk.Combobox(ventana, textvariable=self.categoria_seleccionada, values=categorias, style="TCombobox")
+        self.menu_categoria.pack(pady=15)
 
-        self.noticias_marco = tk.Frame(ventana, bg=fondo_principal)
+
+        self.noticias_marco = ttk.Frame(ventana, style="TFrame")
         self.noticias_marco.pack(padx=20, pady=20, fill="both", expand=True)
 
-        self.noticias_lista = tk.Listbox(self.noticias_marco, selectbackground="lightblue", font=fuente_personalizada)
+  
+        self.noticias_lista = tk.Listbox(self.noticias_marco, bg="#f0f0f0", selectbackground="#007BFF", font=("Arial", 14), bd=0, relief="flat") #Le damos estilo al listbox
         self.noticias_lista.pack(fill="both", expand=True)
 
-        #Estilo personalizado para botones
-        estilo_boton = {
-            "font": fuente_personalizada,
-            "bg": "#007ACC",  #Color de fondo del botón
-            "fg": "white",  #Color de texto del botón
-            "activebackground": "#005FA3",  #Color cuando se presiona el botón
-            "activeforeground": "white"  #Color del texto cuando se presiona el botón
-        }
+        boton_frame = ttk.Frame(ventana, style="TFrame")
+        boton_frame.pack(pady=20)
 
-        self.cargar_noticias_btn = tk.Button(ventana, text="Cargar Noticias", command=self.cargar_noticias, **estilo_boton) #Botón para cargar las noticias
-        self.cargar_noticias_btn.pack(pady=10)
+        
+        estilo.configure("TButton", background="#007BFF", font=("Arial", 16), padding=12) #Estilo para los botones
+        estilo.map("TButton", background=[("active", "#0056b3")])
 
-        self.ver_noticia_btn = tk.Button(ventana, text="Ver Noticia", command=self.ver_noticia, **estilo_boton) #Botón para ver la noticia
-        self.ver_noticia_btn.pack(pady=10)
+        self.cargar_noticias_btn = ttk.Button(boton_frame, text="Cargar Noticias", command=self.cargar_noticias, style="TButton") #Boton de carga de noticias
+        self.cargar_noticias_btn.grid(row=0, column=0, padx=20)
 
-        self.salir_btn = tk.Button(ventana, text="Salir", command=ventana, **estilo_boton) #Botón para salir de la aplicación
-        self.salir_btn.pack()
+        self.ver_noticia_btn = ttk.Button(boton_frame, text="Ver Noticia", command=self.ver_noticia, style="TButton") #Boton para ver noticias
+        self.ver_noticia_btn.grid(row=0, column=1, padx=20)
+
+        self.salir_btn = ttk.Button(boton_frame, text="Salir", command=ventana.quit, style="TButton") #Boton para salir de la app
+        self.salir_btn.grid(row=0, column=2, padx=20)
 
         self.noticias = []
 
