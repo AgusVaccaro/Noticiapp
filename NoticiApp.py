@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 from ttkbootstrap import Style #Incorporamos bootstrap para dar estilo a la app
+from noticia import Noticia
+import webbrowser #Importamos webbrowser para abrir el buscador al clickar en "ver noticia"
+from api import obtener_noticias
 
 class NoticiApp:
     def __init__(self, ventana):
@@ -58,11 +61,50 @@ class NoticiApp:
 
         self.noticias = []
 
-    def cargar_noticias(self):
-        pass
+    def cargar_noticias(self): 
+        categoria_espanol = self.categoria_seleccionada.get() #Obtenemos la categoria seleccionada en español
 
+        
+        categorias = { #Mapeamos las categorías seleccionadas 
+            "General": "general",
+            "Negocios": "business",
+            "Entretenimiento": "entertainment",
+            "Salud": "health",
+            "Ciencia": "science",
+            "Deportes": "sports",
+            "Tecnología": "technology"
+        }
+        categoria = categorias[categoria_espanol]
+
+        noticias_nuevas = obtener_noticias(api_key='113757565e644e8b822c764b453ae188', categoria=categoria) #Obtenemos las noticias
+
+        self.noticias_lista.delete(0, tk.END)  #Limpiamos la lista de noticias antes de cargar nuevas noticias
+
+        
+        self.noticias = [] #Lista para almacenar objetos Noticia
+
+        
+        for i, noticia in enumerate(noticias_nuevas): #Agregamos las nuevas noticias a la lista y a la lista de noticias interna
+            titulo = noticia['title']
+            descripcion = noticia['description']
+            enlace = noticia['url']
+
+            self.noticias_lista.insert(tk.END, f"{i+1}. {titulo}")
+            # Almacenar objetos Noticia con título, descripción y enlace
+            nueva_noticia = Noticia(titulo, descripcion, enlace)
+            self.noticias.append(nueva_noticia)
+
+        self.ventana.update()  
     def ver_noticia(self):
-        pass
+        
+        seleccion = self.noticias_lista.curselection()
+
+        if seleccion:
+            indice = seleccion[0]
+            noticia = self.noticias[indice]
+
+            
+            webbrowser.open_new(noticia.enlace) #Abrimos el enlace en el navegador web predeterminado
 
 if __name__ == "__main__":
     import tkinter as tk
