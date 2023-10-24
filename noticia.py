@@ -1,7 +1,8 @@
 class Noticia:
-    def __init__(self, titulo, descripcion, enlace):
+    def __init__(self, titulo, description, enlace, content):
         self.titulo = titulo
-        self.descripcion = descripcion
+        self.description = description
+        self.content = content
         self.enlace = enlace
 
     def __str__(self):
